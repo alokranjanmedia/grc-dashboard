@@ -16,8 +16,9 @@
 
 ### 1.2 Update GitHub OAuth App Settings
 1. In your GitHub OAuth App settings, update:
-   - **Authorization callback URL**: `https://your-app-name.vercel.app/auth/callback`
-   - Replace `your-app-name` with your actual Vercel app name
+   - **Authorization callback URL**: `https://your-new-project-name.vercel.app/auth/callback`
+   - Replace `your-new-project-name` with your actual Vercel project name
+   - **Note**: You can add multiple callback URLs for both local development and production
 
 ## 🚀 Step 2: Deploy to Vercel
 
@@ -44,21 +45,12 @@ In your Vercel project settings, add these environment variables:
 | Variable | Value |
 |----------|-------|
 | `GITHUB_CLIENT_ID` | `Ov23li8cKR03tDtZyuoS` |
-| `GITHUB_CLIENT_SECRET` | Your GitHub Client Secret |
-| `GITHUB_REDIRECT_URI` | `https://your-app-name.vercel.app/auth/callback` |
+| `GITHUB_CLIENT_SECRET` | `bd106c8d3ae507a1f885ed51ff89f837ec66ae20` |
 
-### 2.4 Update API URLs
-After deployment, update these files with your actual Vercel domain:
+**Note**: The `GITHUB_REDIRECT_URI` is now handled dynamically and will be set automatically based on your Vercel domain.
 
-1. **src/services/api.js** - Line 4:
-   ```javascript
-   ? 'https://your-app-name.vercel.app/api'
-   ```
-
-2. **src/pages/AuthCallback.jsx** - Line 25:
-   ```javascript
-   ? 'https://your-app-name.vercel.app/api/auth/github/callback'
-   ```
+### 2.4 API URLs (Automatic)
+The API URLs are now handled dynamically and will automatically use your Vercel domain. No manual updates needed!
 
 ## 🧪 Step 3: Test Locally (Optional)
 
@@ -66,7 +58,7 @@ After deployment, update these files with your actual Vercel domain:
 Create a `.env.local` file in your project root:
 ```env
 GITHUB_CLIENT_ID=Ov23li8cKR03tDtZyuoS
-GITHUB_CLIENT_SECRET=your-github-client-secret
+GITHUB_CLIENT_SECRET=bd106c8d3ae507a1f885ed51ff89f837ec66ae20
 GITHUB_REDIRECT_URI=http://localhost:5176/auth/callback
 ```
 
