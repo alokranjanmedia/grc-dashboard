@@ -1,5 +1,5 @@
 // Vercel serverless function to handle GitHub OAuth callback
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -110,4 +110,4 @@ export default async function handler(req, res) {
     console.error('GitHub OAuth error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};

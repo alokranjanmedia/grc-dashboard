@@ -19,29 +19,8 @@ const AuthCallback = ({ onLoginSuccess }) => {
           return;
         }
 
-        // Exchange the authorization code for an access token using our backend
-        const apiUrl = process.env.NODE_ENV === 'production' 
-          ? `${window.location.origin}/api/auth/github/callback`
-          : 'http://localhost:5176/api/auth/github/callback';
-        
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Authentication failed');
-        }
-
-        const data = await response.json();
-        
-        // Store the authentication data
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Use the authService to handle the callback
+        const data = await authService.handleAuthCallback(code);
         
         // Call the success callback
         if (onLoginSuccess) {
