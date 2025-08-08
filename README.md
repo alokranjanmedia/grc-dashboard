@@ -178,4 +178,4 @@ If you have any questions or need help:
 
 ---
 
-**Made with ❤️ for GRC professionals**
+**Made with ❤️ for GRC professionals - Updated for GitHub OAuth**
