@@ -1,5 +1,15 @@
 // Vercel serverless function to handle GitHub OAuth callback
 export default async function handler(req, res) {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -10,6 +20,8 @@ export default async function handler(req, res) {
     if (!code) {
       return res.status(400).json({ error: 'Authorization code is required' });
     }
+
+    console.log('Processing GitHub OAuth callback with code:', code);
 
     // Exchange the authorization code for an access token
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
@@ -83,6 +95,8 @@ export default async function handler(req, res) {
 
     // For this demo, we'll create a simple token
     const token = `github-${userData.id}-${Date.now()}`;
+
+    console.log('GitHub OAuth successful for user:', user.username);
 
     // Return success response
     return res.status(200).json({

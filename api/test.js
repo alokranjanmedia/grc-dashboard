@@ -1,0 +1,9 @@
+// Test API endpoint to verify serverless functions are working
+export default function handler(req, res) {
+  res.status(200).json({ 
+    message: 'API is working!',
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    url: req.url
+  });
+}

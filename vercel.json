@@ -27,6 +27,11 @@
       "dest": "/index.html"
     }
   ],
+  "functions": {
+    "api/auth/github/callback.js": {
+      "maxDuration": 30
+    }
+  },
   "env": {
     "GITHUB_CLIENT_ID": "Ov23li8cKR03tDtZyuoS",
     "GITHUB_CLIENT_SECRET": "bd106c8d3ae507a1f885ed51ff89f837ec66ae20"
