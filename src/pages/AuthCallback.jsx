@@ -20,9 +20,11 @@ const AuthCallback = ({ onLoginSuccess }) => {
         }
 
         // Exchange the authorization code for an access token using our backend
-        const response = await fetch(`${process.env.NODE_ENV === 'production' 
-          ? 'https://your-vercel-domain.vercel.app/api/auth/github/callback'
-          : 'http://localhost:5176/api/auth/github/callback'}`, {
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? `${window.location.origin}/api/auth/github/callback`
+          : 'http://localhost:5176/api/auth/github/callback';
+        
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

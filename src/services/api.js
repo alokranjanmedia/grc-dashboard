@@ -1,12 +1,29 @@
 // API service for handling backend communication
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-vercel-domain.vercel.app/api'  // Replace with your actual Vercel domain
-  : 'http://localhost:5176/api'; // For local development
+// Dynamic API base URL - will be set automatically based on environment
+const getApiBaseUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    // In production, use the current domain
+    return `${window.location.origin}/api`;
+  }
+  return 'http://localhost:5176/api'; // For local development
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // GitHub OAuth configuration
 const GITHUB_CLIENT_ID = 'Ov23li8cKR03tDtZyuoS'; // Real GitHub OAuth Client ID
-const GITHUB_REDIRECT_URI = 'http://localhost:5176/auth/callback'; // Updated to match current port
+
+// Dynamic redirect URI - will be set automatically based on environment
+const getRedirectUri = () => {
+  if (process.env.NODE_ENV === 'production') {
+    // In production, use the current domain
+    return `${window.location.origin}/auth/callback`;
+  }
+  return 'http://localhost:5176/auth/callback'; // For local development
+};
+
+const GITHUB_REDIRECT_URI = getRedirectUri();
 
 // Authentication functions
 export const authService = {

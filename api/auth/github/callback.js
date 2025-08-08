@@ -22,7 +22,9 @@ export default async function handler(req, res) {
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code: code,
-        redirect_uri: process.env.GITHUB_REDIRECT_URI,
+        redirect_uri: process.env.NODE_ENV === 'production' 
+          ? `${req.headers.origin}/auth/callback`
+          : process.env.GITHUB_REDIRECT_URI || 'http://localhost:5176/auth/callback',
       }),
     });
 
