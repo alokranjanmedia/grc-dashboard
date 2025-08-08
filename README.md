@@ -2,7 +2,7 @@
 
 A modern Governance, Risk, and Compliance (GRC) dashboard built with React, Tailwind CSS, and GitHub OAuth authentication. Upload and analyze Excel files with a beautiful, responsive interface.
 
-<!-- Deployment test - Triggering new deployment -->
+<!-- Deployment test - Triggering new deployment with environment variables -->
 
 ## ✨ Features
 
