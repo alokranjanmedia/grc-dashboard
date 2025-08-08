@@ -18,10 +18,32 @@ module.exports = async function handler(req, res) {
     const { code } = req.body;
 
     if (!code) {
+      console.error('No authorization code provided');
       return res.status(400).json({ error: 'Authorization code is required' });
     }
 
+    // Debug environment variables
+    console.log('Environment check:', {
+      hasClientId: !!process.env.GITHUB_CLIENT_ID,
+      hasClientSecret: !!process.env.GITHUB_CLIENT_SECRET,
+      hasRedirectUri: !!process.env.GITHUB_REDIRECT_URI,
+      nodeEnv: process.env.NODE_ENV,
+      origin: req.headers.origin
+    });
+
+    if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+      console.error('Missing GitHub OAuth credentials');
+      return res.status(500).json({ error: 'GitHub OAuth not configured' });
+    }
+
     console.log('Processing GitHub OAuth callback with code:', code);
+
+    // Determine redirect URI
+    const redirectUri = process.env.NODE_ENV === 'production' 
+      ? `${req.headers.origin}/auth/callback`
+      : process.env.GITHUB_REDIRECT_URI || 'http://localhost:5176/auth/callback';
+
+    console.log('Using redirect URI:', redirectUri);
 
     // Exchange the authorization code for an access token
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
@@ -34,20 +56,24 @@ module.exports = async function handler(req, res) {
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code: code,
-        redirect_uri: process.env.NODE_ENV === 'production' 
-          ? `${req.headers.origin}/auth/callback`
-          : process.env.GITHUB_REDIRECT_URI || 'http://localhost:5176/auth/callback',
+        redirect_uri: redirectUri,
       }),
     });
 
     const tokenData = await tokenResponse.json();
+    console.log('GitHub token response:', tokenData);
 
     if (tokenData.error) {
       console.error('GitHub token exchange error:', tokenData);
-      return res.status(400).json({ error: 'Failed to exchange authorization code' });
+      return res.status(400).json({ error: 'Failed to exchange authorization code: ' + tokenData.error_description });
     }
 
     const accessToken = tokenData.access_token;
+
+    if (!accessToken) {
+      console.error('No access token received from GitHub');
+      return res.status(400).json({ error: 'No access token received' });
+    }
 
     // Get user information from GitHub
     const userResponse = await fetch('https://api.github.com/user', {
@@ -108,6 +134,6 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('GitHub OAuth error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error: ' + error.message });
   }
 };

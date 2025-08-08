@@ -14,13 +14,17 @@ const AuthCallback = ({ onLoginSuccess }) => {
         const code = searchParams.get('code');
         
         if (!code) {
-          setError('No authorization code received');
+          setError('No authorization code received from GitHub');
           setIsProcessing(false);
           return;
         }
 
+        console.log('Processing auth callback with code:', code);
+
         // Use the authService to handle the callback
         const data = await authService.handleAuthCallback(code);
+        
+        console.log('Auth successful:', data);
         
         // Call the success callback
         if (onLoginSuccess) {
@@ -32,7 +36,17 @@ const AuthCallback = ({ onLoginSuccess }) => {
         
       } catch (err) {
         console.error('Auth callback error:', err);
-        setError('Authentication failed: ' + err.message);
+        
+        // Try to get more detailed error information
+        let errorMessage = 'Authentication failed';
+        
+        if (err.message) {
+          errorMessage = err.message;
+        } else if (err.error) {
+          errorMessage = err.error;
+        }
+        
+        setError(errorMessage);
         setIsProcessing(false);
       }
     };
@@ -47,6 +61,14 @@ const AuthCallback = ({ onLoginSuccess }) => {
           <div className="text-6xl mb-4">❌</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Authentication Failed</h2>
           <p className="text-red-600 mb-6">{error}</p>
+          <div className="text-sm text-gray-500 mb-6">
+            <p>Please check:</p>
+            <ul className="text-left mt-2">
+              <li>• GitHub OAuth app settings</li>
+              <li>• Environment variables in Vercel</li>
+              <li>• Network connectivity</li>
+            </ul>
+          </div>
           <button
             onClick={() => navigate('/login')}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
